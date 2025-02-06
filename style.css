@@ -56,11 +56,28 @@ body {
 .coin {
     width: 150px;
     height: 150px;
-    background-image: url('coin.png');
-    background-size: contain;
-    margin: 0 auto;
+    background: #FFD700;
+    border-radius: 50%;
+    border: 5px solid #B8860B;
+    position: relative;
     cursor: pointer;
     transition: transform 0.1s;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.coin::before {
+    content: "$";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 60px;
+    color: #B8860B;
+}
+
+.coin:hover {
+    transform: scale(1.05);
 }
 
 .coin:active {
@@ -102,16 +119,37 @@ body {
 }
 
 .item {
-    background-color: #333;
-    padding: 10px;
-    border-radius: 5px;
+    background: linear-gradient(145deg, #2a2a2a, #333);
+    padding: 15px;
+    border-radius: 10px;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
 }
 
-.item img {
-    width: 100%;
-    height: auto;
-    margin-bottom: 10px;
+.item:hover {
+    transform: translateY(-5px);
+}
+
+.item-image {
+    width: 120px;
+    height: 120px;
+    background: #444;
+    margin: 0 auto 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: #666;
+}
+
+.item-image.skin::before {
+    content: "🔫";
+}
+
+.item-image.case::before {
+    content: "📦";
 }
 
 .shop-categories {

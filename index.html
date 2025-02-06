@@ -3,8 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coin Clicker CS:GO</title>
+    <title>CS:GO Coin Clicker</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* Добавляем стили для частиц прямо в HTML */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            color: #FFD700;
+            font-weight: bold;
+            z-index: 9999;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100%);
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: transform 0.3s ease-out;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .buy-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .buy-btn:hover {
+            background: #45a049;
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -26,7 +67,7 @@
                 <div class="steam-trade">
                     <h3>Trade URL Steam</h3>
                     <input type="text" id="tradeUrl" placeholder="Введите ваш Trade URL">
-                    <button onclick="saveTradeUrl()">Сохранить</button>
+                    <button onclick="saveTradeUrl()" class="buy-btn">Сохранить</button>
                 </div>
                 <div class="inventory-items" id="inventoryItems">
                     <!-- Здесь будут отображаться предметы инвентаря -->
