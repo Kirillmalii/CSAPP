@@ -2,172 +2,193 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #1a1a1a;
-    color: #ffffff;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
 }
 
 .container {
-    max-width: 800px;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
     margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
     padding: 20px;
-}
-
-.tabs {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
-.tab-btn {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.tab-btn.active {
-    background-color: #4CAF50;
-}
-
-.tab-content {
-    display: none;
-    padding: 20px;
-    background-color: #2a2a2a;
-    border-radius: 10px;
-}
-
-.tab-content.active {
-    display: block;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
 }
 
 .score {
-    text-align: center;
     font-size: 24px;
     margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .coin {
     width: 150px;
     height: 150px;
-    background: #FFD700;
-    border-radius: 50%;
-    border: 5px solid #B8860B;
-    position: relative;
     cursor: pointer;
-    transition: transform 0.1s;
-    margin: 0 auto;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-
-.coin::before {
-    content: "$";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 60px;
-    color: #B8860B;
+    transition: transform 0.2s;
+    margin: 20px auto;
+    position: relative;
+    animation: float 3s ease-in-out infinite;
 }
 
 .coin:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
 .coin:active {
     transform: scale(0.95);
 }
 
-.inventory-container, .shop-container {
-    padding: 20px;
-}
-
-.steam-trade {
-    margin-bottom: 20px;
-}
-
-.steam-trade input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    background-color: #333;
-    border: 1px solid #444;
-    color: #fff;
-    border-radius: 5px;
-}
-
-.steam-trade button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.inventory-items, .shop-items {
+.shop {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 20px;
-    margin-top: 20px;
+    padding: 20px;
+    margin-top: 30px;
 }
 
-.item {
-    background: linear-gradient(145deg, #2a2a2a, #333);
-    padding: 15px;
+.shop-item {
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    padding: 15px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
+    transition: transform 0.3s;
+    backdrop-filter: blur(5px);
 }
 
-.item:hover {
+.shop-item:hover {
     transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.item-image {
-    width: 120px;
-    height: 120px;
-    background: #444;
-    margin: 0 auto 10px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 40px;
-    color: #666;
+.shop-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
-.item-image.skin::before {
-    content: "🔫";
+.shop-item h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
 }
 
-.item-image.case::before {
-    content: "📦";
+.shop-item .price {
+    color: #ffd700;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-.shop-categories {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.category-btn {
-    background-color: #333;
+.buy-btn {
+    background: #4CAF50;
     color: white;
-    padding: 10px 20px;
     border: none;
+    padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
-.category-btn.active {
-    background-color: #4CAF50;
+.buy-btn:hover {
+    background: #45a049;
+}
+
+.buy-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.particle {
+    position: absolute;
+    pointer-events: none;
+    animation: particle-animation 1s ease-out forwards;
+}
+
+@keyframes particle-animation {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--x), var(--y));
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .coin {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .shop {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 15px;
+    }
+    
+    .shop-item {
+        padding: 10px;
+    }
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: rgba(76, 175, 80, 0.9);
+    color: white;
+    border-radius: 5px;
+    transform: translateX(200%);
+    animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+    to {
+        transform: translateX(0);
+    }
+}
+
+.inventory {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.inventory h2 {
+    margin-bottom: 15px;
+    text-align: center;
 }

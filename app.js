@@ -1,96 +1,127 @@
-// Инициализация Telegram WebApp
-const tg = window.Telegram.WebApp;
-tg.expand();
-
-// Инициализация переменных
-let score = 0;
+let tg = window.Telegram.WebApp;
+let score = parseInt(localStorage.getItem('score')) || 0;
 const scoreElement = document.getElementById('score');
 const coin = document.getElementById('coin');
+const shop = document.getElementById('shop');
 
-// Обработка кликов по монетке
+// Инициализация
+document.addEventListener('DOMContentLoaded', () => {
+    updateScore();
+    loadShopItems();
+    tg.ready();
+    tg.expand();
+});
+
+// Обработка клика по монете
 coin.addEventListener('click', (event) => {
     score++;
-    scoreElement.textContent = score;
-    
-    // Анимация клика
+    updateScore();
+    createParticles(event);
+    playClickAnimation();
+    saveScore();
+});
+
+// Создание частиц при клике
+function createParticles(event) {
+    const rect = coin.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.innerHTML = '+1';
+        
+        const angle = (i * Math.PI * 2) / 8;
+        const velocity = 5;
+        const particleX = Math.cos(angle) * 50;
+        const particleY = Math.sin(angle) * 50;
+
+        particle.style.setProperty('--x', `${particleX}px`);
+        particle.style.setProperty('--y', `${particleY}px`);
+        
+        coin.appendChild(particle);
+        
+        setTimeout(() => particle.remove(), 1000);
+    }
+}
+
+// Анимация клика по монете
+function playClickAnimation() {
     coin.style.transform = 'scale(0.95)';
     setTimeout(() => {
         coin.style.transform = 'scale(1)';
     }, 100);
-    
-    // Сохранение счета
+}
+
+// Обновление счета
+function updateScore() {
+    scoreElement.textContent = score;
+    saveScore();
+}
+
+// Сохранение счета
+function saveScore() {
     localStorage.setItem('score', score);
-    
-    // Добавляем эффект частиц
-    createParticles(event);
-});
+    // Отправляем данные в бота
+    tg.sendData(JSON.stringify({
+        action: 'updateScore',
+        score: score
+    }));
+}
 
-// Функция создания эффекта частиц
-function createParticles(event) {
-    const particles = 5;
-    const coinRect = coin.getBoundingClientRect();
-    
-    for (let i = 0; i < particles; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.textContent = '+1';
-        document.body.appendChild(particle);
-        
-        const angle = (Math.random() * Math.PI * 2);
-        const velocity = 2 + Math.random() * 2;
-        const x = coinRect.left + coinRect.width / 2;
-        const y = coinRect.top + coinRect.height / 2;
-        
-        particle.style.left = x + 'px';
-        particle.style.top = y + 'px';
-        
-        const animation = particle.animate([
-            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-            { transform: `translate(${Math.cos(angle) * 100}px, ${Math.sin(angle) * 100}px) scale(0)`, opacity: 0 }
-        ], {
-            duration: 1000,
-            easing: 'ease-out'
-        });
-        
-        animation.onfinish = () => particle.remove();
+// Загрузка предметов магазина
+function loadShopItems() {
+    // Здесь будет загрузка предметов из API бота
+    // Пока используем тестовые данные
+    const testItems = [
+        {
+            id: 1,
+            name: 'AK-47 | Asiimov',
+            price: 1000,
+            image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEpiLuSrYmnjQO3-UdsZGHyd4_Bd1RvNQ7T_FDrw-_ng5Pu75iY1zI97bhLsvQz/360fx360f'
+        },
+        // Добавьте больше предметов по необходимости
+    ];
+
+    shop.innerHTML = testItems.map(item => `
+        <div class="shop-item">
+            <img src="${item.image}" alt="${item.name}">
+            <h3>${item.name}</h3>
+            <div class="price">${item.price} баллов</div>
+            <button class="buy-btn" onclick="buyItem(${item.id})" ${score < item.price ? 'disabled' : ''}>
+                Купить
+            </button>
+        </div>
+    `).join('');
+}
+
+// Покупка предмета
+function buyItem(itemId) {
+    const item = findItemById(itemId);
+    if (score >= item.price) {
+        score -= item.price;
+        updateScore();
+        showNotification(`Вы купили ${item.name}!`);
+        // Отправляем данные о покупке в бота
+        tg.sendData(JSON.stringify({
+            action: 'buyItem',
+            itemId: itemId
+        }));
     }
 }
 
-// Загрузка сохраненного счета
-document.addEventListener('DOMContentLoaded', () => {
-    const savedScore = localStorage.getItem('score');
-    if (savedScore) {
-        score = parseInt(savedScore);
-        scoreElement.textContent = score;
-    }
-});
-
-// Обработка переключения вкладок
-const tabButtons = document.querySelectorAll('.tab-btn');
-const tabContents = document.querySelectorAll('.tab-content');
-
-tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabContents.forEach(content => content.classList.remove('active'));
-        
-        button.classList.add('active');
-        
-        const tabId = button.getAttribute('data-tab');
-        document.getElementById(tabId).classList.add('active');
-    });
-});
-
-// Функция сохранения Trade URL
-function saveTradeUrl() {
-    const tradeUrl = document.getElementById('tradeUrl').value;
-    if (tradeUrl) {
-        localStorage.setItem('tradeUrl', tradeUrl);
-        showNotification('Trade URL сохранен!');
-    }
+// Поиск предмета по ID
+function findItemById(id) {
+    // Здесь будет поиск в реальных данных
+    return {
+        id: 1,
+        name: 'AK-47 | Asiimov',
+        price: 1000
+    };
 }
 
-// Функция показа уведомления
+// Показ уведомления
 function showNotification(message) {
     const notification = document.createElement('div');
     notification.className = 'notification';
@@ -98,89 +129,6 @@ function showNotification(message) {
     document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.classList.add('show');
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        }, 2000);
-    }, 100);
+        notification.remove();
+    }, 3000);
 }
-
-// Примеры предметов магазина
-const shopItems = [
-    { id: 1, name: 'AK-47 | Asiimov', price: 1000, type: 'skin' },
-    { id: 2, name: 'AWP | Dragon Lore', price: 5000, type: 'skin' },
-    { id: 3, name: 'Кейс Gamma', price: 500, type: 'case' },
-    { id: 4, name: 'Кейс Chroma', price: 500, type: 'case' }
-];
-
-// Функция отображения предметов в магазине
-function displayShopItems(category) {
-    const shopItemsContainer = document.getElementById('shopItems');
-    shopItemsContainer.innerHTML = '';
-    
-    const filteredItems = shopItems.filter(item => item.type === category);
-    
-    filteredItems.forEach(item => {
-        const itemElement = document.createElement('div');
-        itemElement.className = 'item';
-        itemElement.innerHTML = `
-            <div class="item-image ${item.type}"></div>
-            <h3>${item.name}</h3>
-            <p>${item.price} баллов</p>
-            <button onclick="buyItem(${item.id})" class="buy-btn">Купить</button>
-        `;
-        shopItemsContainer.appendChild(itemElement);
-    });
-}
-
-// Обработка переключения категорий в магазине
-const categoryButtons = document.querySelectorAll('.category-btn');
-categoryButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        categoryButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        displayShopItems(button.getAttribute('data-category'));
-    });
-});
-
-// Функция покупки предмета
-function buyItem(itemId) {
-    const item = shopItems.find(i => i.id === itemId);
-    if (item && score >= item.price) {
-        score -= item.price;
-        scoreElement.textContent = score;
-        localStorage.setItem('score', score);
-        
-        // Добавление предмета в инвентарь
-        const inventory = JSON.parse(localStorage.getItem('inventory') || '[]');
-        inventory.push(item);
-        localStorage.setItem('inventory', JSON.stringify(inventory));
-        
-        showNotification(`Вы успешно приобрели ${item.name}!`);
-        updateInventory();
-    } else {
-        showNotification('Недостаточно баллов для покупки!');
-    }
-}
-
-// Функция обновления инвентаря
-function updateInventory() {
-    const inventoryContainer = document.getElementById('inventoryItems');
-    const inventory = JSON.parse(localStorage.getItem('inventory') || '[]');
-    
-    inventoryContainer.innerHTML = '';
-    inventory.forEach(item => {
-        const itemElement = document.createElement('div');
-        itemElement.className = 'item';
-        itemElement.innerHTML = `
-            <div class="item-image ${item.type}"></div>
-            <h3>${item.name}</h3>
-        `;
-        inventoryContainer.appendChild(itemElement);
-    });
-}
-
-// Инициализация магазина и инвентаря
-displayShopItems('skins');
-updateInventory();
