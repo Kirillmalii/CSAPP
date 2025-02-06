@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Clicker CS:GO</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="game">Игра</button>
+            <button class="tab-btn" data-tab="inventory">Инвентарь</button>
+            <button class="tab-btn" data-tab="shop">Магазин</button>
+        </div>
+
+        <div class="tab-content active" id="game">
+            <div class="score">Баллы: <span id="score">0</span></div>
+            <div class="coin" id="coin"></div>
+        </div>
+
+        <div class="tab-content" id="inventory">
+            <div class="inventory-container">
+                <h2>Ваш инвентарь</h2>
+                <div class="steam-trade">
+                    <h3>Trade URL Steam</h3>
+                    <input type="text" id="tradeUrl" placeholder="Введите ваш Trade URL">
+                    <button onclick="saveTradeUrl()">Сохранить</button>
+                </div>
+                <div class="inventory-items" id="inventoryItems">
+                    <!-- Здесь будут отображаться предметы инвентаря -->
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="shop">
+            <div class="shop-container">
+                <h2>Магазин</h2>
+                <div class="shop-categories">
+                    <button class="category-btn active" data-category="skins">Скины</button>
+                    <button class="category-btn" data-category="cases">Кейсы</button>
+                </div>
+                <div class="shop-items" id="shopItems">
+                    <!-- Здесь будут отображаться предметы магазина -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
