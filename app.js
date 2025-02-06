@@ -2,15 +2,37 @@ let tg = window.Telegram.WebApp;
 let score = parseInt(localStorage.getItem('score')) || 0;
 const scoreElement = document.getElementById('score');
 const coin = document.getElementById('coin');
-const shop = document.getElementById('shop');
+const shopContainer = document.getElementById('shop');
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     updateScore();
     loadShopItems();
+    initTabs();
+    loadTradeUrl();
     tg.ready();
     tg.expand();
 });
+
+// Обработка вкладок
+function initTabs() {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+            
+            // Убираем активный класс со всех кнопок и контента
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Добавляем активный класс нужной кнопке и контенту
+            button.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+}
 
 // Обработка клика по монете
 coin.addEventListener('click', (event) => {
@@ -50,7 +72,7 @@ function createParticles(event) {
 function playClickAnimation() {
     coin.style.transform = 'scale(0.95)';
     setTimeout(() => {
-        coin.style.transform = 'scale(1)';
+        coin.style.transform = '';
     }, 100);
 }
 
@@ -63,7 +85,6 @@ function updateScore() {
 // Сохранение счета
 function saveScore() {
     localStorage.setItem('score', score);
-    // Отправляем данные в бота
     tg.sendData(JSON.stringify({
         action: 'updateScore',
         score: score
@@ -72,19 +93,16 @@ function saveScore() {
 
 // Загрузка предметов магазина
 function loadShopItems() {
-    // Здесь будет загрузка предметов из API бота
-    // Пока используем тестовые данные
     const testItems = [
         {
             id: 1,
-            name: 'AK-47 | Asiimov',
+            name: 'AK-47 | Красная линия',
             price: 1000,
-            image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEpiLuSrYmnjQO3-UdsZGHyd4_Bd1RvNQ7T_FDrw-_ng5Pu75iY1zI97bhLsvQz/360fx360f'
-        },
-        // Добавьте больше предметов по необходимости
+            image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEm1Rd6dd2j6eQ9N2t2wK3-ENsZ23wcIKRdQE2NwyD_FK_kLq9gJDu7p_KyyRr7nNw-z-DyIFJbNUz/360fx360f'
+        }
     ];
 
-    shop.innerHTML = testItems.map(item => `
+    shopContainer.innerHTML = testItems.map(item => `
         <div class="shop-item">
             <img src="${item.image}" alt="${item.name}">
             <h3>${item.name}</h3>
@@ -103,7 +121,6 @@ function buyItem(itemId) {
         score -= item.price;
         updateScore();
         showNotification(`Вы купили ${item.name}!`);
-        // Отправляем данные о покупке в бота
         tg.sendData(JSON.stringify({
             action: 'buyItem',
             itemId: itemId
@@ -113,12 +130,32 @@ function buyItem(itemId) {
 
 // Поиск предмета по ID
 function findItemById(id) {
-    // Здесь будет поиск в реальных данных
     return {
         id: 1,
-        name: 'AK-47 | Asiimov',
+        name: 'AK-47 | Красная линия',
         price: 1000
     };
+}
+
+// Сохранение Trade URL
+function saveTradeUrl() {
+    const tradeUrl = document.getElementById('tradeUrl').value;
+    if (tradeUrl) {
+        localStorage.setItem('tradeUrl', tradeUrl);
+        showNotification('Trade URL сохранен!');
+        tg.sendData(JSON.stringify({
+            action: 'saveTradeUrl',
+            tradeUrl: tradeUrl
+        }));
+    }
+}
+
+// Загрузка Trade URL
+function loadTradeUrl() {
+    const tradeUrl = localStorage.getItem('tradeUrl');
+    if (tradeUrl) {
+        document.getElementById('tradeUrl').value = tradeUrl;
+    }
 }
 
 // Показ уведомления

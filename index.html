@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS:GO Coin Clicker</title>
+    <title>CS:GO Кликер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         /* Добавляем стили для частиц прямо в HTML */
@@ -45,45 +47,61 @@
         .buy-btn:hover {
             background: #45a049;
         }
+        
+        .save-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .save-btn:hover {
+            background: #45a049;
+        }
     </style>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="game">Игра</button>
-            <button class="tab-btn" data-tab="inventory">Инвентарь</button>
-            <button class="tab-btn" data-tab="shop">Магазин</button>
-        </div>
-
-        <div class="tab-content active" id="game">
+        <div class="header">
+            <h1>CS:GO Кликер</h1>
             <div class="score">Баллы: <span id="score">0</span></div>
-            <div class="coin" id="coin"></div>
         </div>
 
-        <div class="tab-content" id="inventory">
-            <div class="inventory-container">
-                <h2>Ваш инвентарь</h2>
-                <div class="steam-trade">
-                    <h3>Trade URL Steam</h3>
-                    <input type="text" id="tradeUrl" placeholder="Введите ваш Trade URL">
-                    <button onclick="saveTradeUrl()" class="buy-btn">Сохранить</button>
-                </div>
-                <div class="inventory-items" id="inventoryItems">
-                    <!-- Здесь будут отображаться предметы инвентаря -->
-                </div>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="clicker">Кликер</button>
+            <button class="tab-btn" data-tab="shop">Магазин</button>
+            <button class="tab-btn" data-tab="inventory">Инвентарь</button>
+            <button class="tab-btn" data-tab="settings">Настройки</button>
+        </div>
+
+        <div class="tab-content active" id="clicker">
+            <div class="coin" id="coin">
+                <img src="coin.svg" alt="Coin" width="150" height="150">
             </div>
         </div>
 
         <div class="tab-content" id="shop">
-            <div class="shop-container">
-                <h2>Магазин</h2>
-                <div class="shop-categories">
-                    <button class="category-btn active" data-category="skins">Скины</button>
-                    <button class="category-btn" data-category="cases">Кейсы</button>
-                </div>
-                <div class="shop-items" id="shopItems">
-                    <!-- Здесь будут отображаться предметы магазина -->
+            <div class="shop-items" id="shop">
+                <!-- Предметы магазина будут добавляться динамически -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="inventory">
+            <div class="inventory-items">
+                <!-- Предметы инвентаря будут добавляться динамически -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="settings">
+            <div class="settings-container">
+                <h2>Настройки</h2>
+                <div class="trade-url">
+                    <label for="tradeUrl">Trade URL:</label>
+                    <input type="text" id="tradeUrl" placeholder="Введите ваш Steam Trade URL">
+                    <button class="save-btn" onclick="saveTradeUrl()">Сохранить</button>
                 </div>
             </div>
         </div>
